@@ -65,11 +65,14 @@ class ElectionController extends Controller
             'eng_ID' => 'required|max:255',
             'position' => 'required|integer',
         ]);
+
         //save the candidate
         //firstly check if user exists
         $user = user::where('eng_ID', '=', $request->eng_ID);
-
-        if($user->exists() == true){
+        if( ($user!= null) && candidate::where('candidate_user_id', '=', $user->first()->id)->exists()){
+            Session::flash('candidate_save_error', 'Candidates are only allowed to stand for 1 position.');
+            return redirect()->route('candidate.new');
+        }elseif($user->exists() == true){
             candidate::create([
                 'candidate_position_id' => $request->position,
                 'candidate_user_id' => $user->first()->id,

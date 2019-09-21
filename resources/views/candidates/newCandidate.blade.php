@@ -11,11 +11,11 @@
                     <form method="POST" action="{{ route('candidate.create') }}">
 
                         @if(Session::has('candidate_save_successful'))
-                            <div class = "text-success">
+                            <div class = "text-success" style = "margin-bottom: 5px;">
                                 {{Session::get('candidate_save_successful')}}
                             </div>
                         @elseif(Session::has('candidate_save_error'))
-                            <div class = "text-danger">
+                            <div class = "text-danger" style = "margin-bottom: 5px;">
                                 {{Session::get('candidate_save_error')}}
                             </div>
                         @endif
