@@ -83,7 +83,7 @@
                 <div class="title m-b-md">
                     Electronic Voting System
                     <span style = "font-size: 10px;">
-                        Engineering Society VI branch
+                        NSE VI branch
                     </span>
                 </div>
 
