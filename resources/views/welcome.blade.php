@@ -82,6 +82,9 @@
             <div class="content">
                 <div class="title m-b-md">
                     Electronic Voting System
+                    <span style = "font-size: 10px;">
+                        Engineering Society VI branch
+                    </span>
                 </div>
 
                 {{-- <div class="links">

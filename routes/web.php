@@ -30,3 +30,19 @@ Route::get('/candidate/new', 'ElectionController@newCandidate')->middleware('adm
 Route::post('/candidate/create', 'ElectionController@createCandidate')->middleware('admin')->name('candidate.create');
 
 Route::get('voters/list', 'ElectionController@votersList')->name('voters.list');
+
+Route::get('/positions/list', 'ElectionController@viewPositions')->middleware('admin')->name('positions.list');
+
+Route::get('/positions/new', 'ElectionController@new_position')->middleware('admin')->name('new.position');
+
+Route::post('/position/create', 'ElectionController@create_position')->middleware('admin')->name('create.position');
+
+Route::get('/position/delete/{id}', 'ElectionController@deletePosition')->middleware('admin')->name('delete.position');
+
+Route::get('/user/verify/{id}', 'ElectionController@verifyUser')->middleware('admin')->name('verify.user');
+
+Route::get('/users', 'ElectionController@viewUsers')->middleware('admin')->name('users.list');
+
+Route::get('/edit/position/{id}', 'ElectionController@editPosition')->middleware('admin')->name('edit.position');
+
+Route::post('/update/position', 'ElectionController@updatePosition')->middleware('admin')->name('update.position');

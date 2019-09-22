@@ -13,6 +13,8 @@ use Auth;
 class ElectionController extends Controller
 {
     public function viewCandidates(){
+        // $positions = positions::all();
+
         $candidates = candidate::all()->groupBy(function($item){
             return positions::find($item->candidate_position_id)->position_name;
         });
@@ -27,22 +29,27 @@ class ElectionController extends Controller
 
     //vote for a candidate
     public function voteCandidate(Request $request){
-        //firstly we check if it's a valid candidate id
-        $candidate = candidate::find($request->candidate_id);
+        if(Auth::user()->verified == 1){
+            //firstly we check if it's a valid candidate id
+            $candidate = candidate::find($request->candidate_id);
 
-        $position = positions::where('position_name', '=', $request->pos_id)->first();
+            $position = positions::where('position_name', '=', $request->pos_id)->first();
 
-        //if valid id then we get the id of the logged in user
-        if($candidate != null){
-            $user_id = Auth::user()->id;
-            //then we store the vote
-            return votes::create([
-                'candidate_id' => $candidate->candidate_id,
-                'voter_id' => $user_id,
-                'position_id' => $position->position_id
-            ]);
-        }else{
-            return 'There was an error';
+            //if valid id then we get the id of the logged in user
+            if($candidate != null){
+                $user_id = Auth::user()->id;
+                //then we store the vote
+                return votes::create([
+                    'candidate_id' => $candidate->candidate_id,
+                    'voter_id' => $user_id,
+                    'position_id' => $position->position_id
+                ]);
+            }else{
+                return 'There was an error';
+            }
+        }
+        else{
+            return 'Only verified users can vote';
         }
     }
 
@@ -96,5 +103,93 @@ class ElectionController extends Controller
         $voters = votes::all();
 
         return view('vote.voters', ['voters' => $voters]);
+    }
+
+    public function verifyUser($id){
+        if(user::find($id)->exists()){
+            $user = user::find($id);
+            $user->verified = 1;
+            $user->save();
+        }
+        else{
+            return 'error';
+        }
+
+        return redirect()->route('candidates');
+    }
+
+    public function viewPositions(){
+       $positions =  positions::all();
+       return view('positions.viewPositions', ['positions'=> $positions]);
+    }
+
+    public function new_position(){
+        return view('positions.newPosition');
+    }
+
+    public function create_position(Request $request){
+        //validate all the data first
+        $request->validate([
+            'position_name' => 'unique:position|required| max: 15'
+        ]);
+
+        //create the new position
+        $position = positions::create([
+            'position_name' => $request->position_name,
+            'election_id' =>1
+        ]);
+
+        if($position){
+            $request->session()->flash('position_save_success', 'Position saved successfully');
+        }else{
+            $request->session()->flash('position_save_error', 'Position save unsuccessful');
+        }
+
+        return redirect()->route('new.position');
+    }
+
+    public function editPosition($id){
+        $position = positions::find($id);
+
+        return view('positions.editPosition', ['position' => $position, 'position_id' => $position->position_id]);
+    }
+
+    public function updatePosition(Request $request){
+        $request->validate([
+            'position_name' => 'unique:position|required| max: 30'
+        ]);
+
+        //create the new position
+        $position = positions::find($request->position_id);
+
+        if($position){
+            $position->position_name = $request->position_name;
+            $position->save();
+            $request->session()->flash('position_save_success', 'Position edit successfully');
+        }else{
+            $request->session()->flash('position_save_error', 'Position edit unsuccessful');
+        }
+
+        return redirect()->route('new.position');
+    }
+
+    public function deletePosition($id){
+        $position = positions::find($id);
+        if( $position->exists() ){
+            $position->candidates()->forceDelete();
+            $position->delete();
+            Session::flash('position_success', "Position Deleted Successfully");
+        }
+        else{
+            Session::flash('position_error', "Position coudln't be deleted");
+        }
+
+        return redirect()->route('positions.list');
+    }
+
+    public function viewUsers(){
+        $inActiveUsers = user::where('verified', '=', 0)->get();
+
+        return view('users.viewUsers', ['users' => $inActiveUsers]);
     }
 }

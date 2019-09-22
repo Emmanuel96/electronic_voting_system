@@ -15,6 +15,7 @@ class CandidatesSeeder extends Seeder
             'eng_ID' => "50023",
             'name' => 'Audu Emmanuel',
             'email' => 'kole.audu1@gmail.com',
+            'verified' => 1,
             'role' => 0,
             'password' => app('hash')->make('adaaudu'),
         ]);
@@ -28,6 +29,7 @@ class CandidatesSeeder extends Seeder
             'eng_ID' => "54112",
             'name' => 'John Audu',
             'role' => 0,
+            'verified' => 1,
             'email' => 'kole.audu2@gmail.com',
             'password' => app('hash')->make('adaaudu'),
             // 'created_at' => '',
