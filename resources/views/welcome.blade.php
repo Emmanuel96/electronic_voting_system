@@ -81,9 +81,9 @@
 
             <div class="content">
                 <div class="title m-b-md">
+                    NSE VI Branch<br>
                     Electronic Voting System<br>
                     <span style = "font-size: 10px;">
-                        NSE VI branch
                     </span>
                 </div>
 
